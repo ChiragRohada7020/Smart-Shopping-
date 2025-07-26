@@ -24,7 +24,7 @@ This is a full-stack web application for comparing prices, reviews, ratings, and
 | Backend       | Spring Boot (Java)    |
 | Database      | PostgreSQL            |
 | Caching       | Redis                 |
-| Web Scraping  | JSoup / APIs          |
+| Web Scraping  |APIs                   |
 | Containerization | Docker + Docker Compose |
 
 ---
