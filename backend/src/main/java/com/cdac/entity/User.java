@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Data // Lombok will auto-generate getters, setters, toString, equals, etc.
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users") 
+@Table(name = "users")
 public class User {
 
     @Id
@@ -36,20 +36,10 @@ public class User {
 
     private String role = "ROLE_USER";
 
-
-
     @Column(name = "code_expiry_time")
     private LocalDateTime codeExpiryTime;
 
-<<<<<<< HEAD
-    
-    @Column(name = "is_verified")
-    private boolean isVerified = false;
-=======
-
->>>>>>> 54ed7724b2288051fe5785d4ac49643da7802259
-
- // --- NEW FIELDS FOR PASSWORD RESET ---
+    // --- NEW FIELDS FOR PASSWORD RESET ---
     @Column(name = "password_reset_token")
     private String passwordResetToken;
 
@@ -57,14 +47,10 @@ public class User {
     private LocalDateTime tokenExpiryTime;
     // --- END OF NEW FIELDS ---
 
- 
-    
-    
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<SearchHistory> searchHistory;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Cart> cart;
-
 
 }
