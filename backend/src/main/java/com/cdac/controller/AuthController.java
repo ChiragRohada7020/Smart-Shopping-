@@ -143,6 +143,7 @@ public class AuthController {
             // Generate a unique token
             String token = generateOTP(); // Reusing your OTP logic is fine for this
             user.setPasswordResetToken(token);
+            User u = new User() ;
             user.setTokenExpiryTime(LocalDateTime.now().plusMinutes(10)); // 10 minute validity
             userRepo.save(user);
 

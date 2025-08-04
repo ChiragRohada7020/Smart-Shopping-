@@ -1,0 +1,14 @@
+package com.cdac.dto;
+
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
+@Data
+public class VerifyRequest {
+	
+    private String email;
+    private String code;
+    
+    
+}
