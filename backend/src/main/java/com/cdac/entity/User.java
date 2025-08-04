@@ -36,15 +36,18 @@ public class User {
 
     private String role = "ROLE_USER";
 
-    @Column(name = "verification_code")
-    private String verificationCode;
+
 
     @Column(name = "code_expiry_time")
     private LocalDateTime codeExpiryTime;
 
+<<<<<<< HEAD
     
     @Column(name = "is_verified")
     private boolean isVerified = false;
+=======
+
+>>>>>>> 54ed7724b2288051fe5785d4ac49643da7802259
 
  // --- NEW FIELDS FOR PASSWORD RESET ---
     @Column(name = "password_reset_token")
