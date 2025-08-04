@@ -112,7 +112,7 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>1.18.32</version> <!-- Latest stable -->
+                            <version> 1.18.32</version> <!-- Latest stable -->
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

@@ -12,9 +12,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import com.cdac.dto.ForgotPassword;
 import com.cdac.dto.JwtResponse;
 import com.cdac.dto.LoginRequest;
 import com.cdac.dto.RegisterRequest;
+import com.cdac.dto.ResetPassword;
 import com.cdac.dto.VerifyRequest;
 import com.cdac.entity.User;
 import com.cdac.repository.UserRepository;
@@ -66,6 +68,9 @@ public class AuthController {
 
         return ResponseEntity.ok("Registered successfully. Please check your email for the OTP.");
     }
+
+   
+    
 
    
     @PostMapping("/verify")
@@ -120,6 +125,60 @@ public class AuthController {
         return ResponseEntity.ok(new JwtResponse(token, request.getEmail()));
     }
 
+    
+    /**
+     * Step 1: User requests a password reset.
+     * We generate a token and email it to them.
+     */
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestBody ForgotPassword request) {
+        // Find user by email
+        Optional<User> userOptional = userRepo.findByEmail(request.getEmail());
+
+        // Security Note: Always return a generic success message.
+        // This prevents an attacker from learning which emails are registered.
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            // Generate a unique token
+            String token = generateOTP(); // Reusing your OTP logic is fine for this
+            user.setPasswordResetToken(token);
+            user.setTokenExpiryTime(LocalDateTime.now().plusMinutes(10)); // 10 minute validity
+            userRepo.save(user);
+
+            // Send email with the token
+            emailService.sendPasswordResetEmail(user.getEmail(), token);
+        }
+
+        return ResponseEntity.ok("If an account with this email exists, a password reset token has been sent.");
+    }
+    
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPassword request) {
+        // Find the user by the provided token
+        Optional<User> userOptional = userRepo.findByPasswordResetToken(request.getToken());
+
+        if (userOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid token.");
+        }
+
+        User user = userOptional.get();
+
+        // Check if the token has expired
+        if (user.getTokenExpiryTime().isBefore(LocalDateTime.now())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token has expired.");
+        }
+
+        // Token is valid, update the password
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+
+        // Invalidate the token after use so it cannot be used again
+        user.setPasswordResetToken(null);
+        user.setTokenExpiryTime(null);
+        userRepo.save(user);
+
+        return ResponseEntity.ok("Password has been reset successfully. You can now login.");
+    }
    
     private String generateOTP() {
         return String.valueOf((int) (Math.random() * 900000) + 100000); // 6-digit number

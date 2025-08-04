@@ -42,12 +42,26 @@ public class User {
     @Column(name = "code_expiry_time")
     private LocalDateTime codeExpiryTime;
 
+    
     @Column(name = "is_verified")
     private boolean isVerified = false;
 
+ // --- NEW FIELDS FOR PASSWORD RESET ---
+    @Column(name = "password_reset_token")
+    private String passwordResetToken;
+
+    @Column(name = "token_expiry_time")
+    private LocalDateTime tokenExpiryTime;
+    // --- END OF NEW FIELDS ---
+
+ 
+    
+    
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<SearchHistory> searchHistory;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Cart> cart;
+
+
 }
