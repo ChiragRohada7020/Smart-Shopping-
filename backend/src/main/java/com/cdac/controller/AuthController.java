@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +24,8 @@ import com.cdac.entity.User;
 import com.cdac.repository.UserRepository;
 import com.cdac.security.JwtUtil;
 import com.cdac.service.EmailService;
+
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/auth")
@@ -106,24 +110,45 @@ public class AuthController {
     // -------------------------
     // Login
     // -------------------------
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        Optional<User> userOpt = userRepo.findByEmail(request.getEmail());
-        if (userOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
-        }
+   @PostMapping("/login")
+public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    // Check if user exists
+    Optional<User> userOpt = userRepo.findByEmail(request.getEmail());
+    if (userOpt.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+    }
 
-        User user = userOpt.get();
-        if (!user.isVerified()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Email not verified. Please check your email.");
-        }
+    User user = userOpt.get();
+    
+    // Check if email is verified
+    if (!user.isVerified()) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body("Email not verified. Please check your email.");
+    }
 
+    try {
+        // Attempt authentication
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+                new UsernamePasswordAuthenticationToken(
+                    request.getEmail(), 
+                    request.getPassword()
+                )
+        );
 
+        // If authentication succeeds, generate token
         String token = jwtUtil.generateToken(request.getEmail());
         return ResponseEntity.ok(new JwtResponse(token, request.getEmail()));
+        
+    } catch (BadCredentialsException e) {
+        // Handle incorrect password
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Invalid password. Please try again.");
+    } catch (AuthenticationException e) {
+        // Handle other authentication exceptions
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("Authentication failed:  " + e.getMessage());
     }
+}
 
     
     /**
@@ -131,7 +156,7 @@ public class AuthController {
      * We generate a token and email it to them.
      */
     @PostMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(@RequestBody ForgotPassword request) {
+    public ResponseEntity<String> forgotPassword(@RequestBody ForgotPassword request ,HttpSession session) {
         // Find user by email
         Optional<User> userOptional = userRepo.findByEmail(request.getEmail());
 
@@ -141,11 +166,16 @@ public class AuthController {
             User user = userOptional.get();
 
             // Generate a unique token
+//            user.setPasswordResetToken(token);
+//            User u = new User() ;
+//            user.setTokenExpiryTime(LocalDateTime.now().plusMinutes(10)); // 10 minute validity
+//            userRepo.save(user);
+            
             String token = generateOTP(); // Reusing your OTP logic is fine for this
-            user.setPasswordResetToken(token);
-            User u = new User() ;
-            user.setTokenExpiryTime(LocalDateTime.now().plusMinutes(10)); // 10 minute validity
-            userRepo.save(user);
+            session.setAttribute("email", request.getEmail());
+            session.setAttribute("token", token) ;
+            session.setAttribute("expireTime", LocalDateTime.now().plusMinutes(10));
+            
 
             // Send email with the token
             emailService.sendPasswordResetEmail(user.getEmail(), token);
@@ -155,9 +185,9 @@ public class AuthController {
     }
     
     @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@RequestBody ResetPassword request) {
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPassword request , HttpSession session) {
         // Find the user by the provided token
-        Optional<User> userOptional = userRepo.findByPasswordResetToken(request.getToken());
+        Optional<User> userOptional = userRepo.findByPasswordResetToken( (String) session.getAttribute("token") );
 
         if (userOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid token.");
