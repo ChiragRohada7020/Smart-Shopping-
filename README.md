@@ -47,4 +47,9 @@ This is a full-stack web application for comparing prices, reviews, ratings, and
 ### 🧃 Run All Services Together
 
 ```bash
+<<<<<<< HEAD
 docker-compose up --build
+=======
+docker-compose -f docker-compose.jenkins.yml down -v
+docker-compose -f docker-compose.jenkins.yml up -d --build
+>>>>>>> updateMain-1.2

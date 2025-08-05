@@ -1,0 +1,32 @@
+# Dependency directories
+node_modules/
+
+# Build output
+dist/  # (This is sometimes needed if you build locally before Docker)
+
+# Logs and temporary files
+npm-debug.log
+yarn-error.log
+.pnpm-debug.log
+
+# Environment files (except the ones you explicitly copy)
+.env
+.env.local
+.env.*.local
+
+# IDE/Editor directories
+.vscode/
+.idea/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Optional: Test and coverage directories
+coverage/
+__tests__/
+*.test.js
