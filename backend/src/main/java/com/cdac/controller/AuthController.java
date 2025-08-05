@@ -53,9 +53,15 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already registered.");
         }
 
+<<<<<<< HEAD
         if (tempUsers.containsKey(request.getEmail())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already pending verification.");
         }
+=======
+        // if (tempUsers.containsKey(request.getEmail())) {
+        //     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already pending verification.");
+        // }
+>>>>>>> f8c3d8756f3048b9c7d39613f6c799d9d0a20172
 
         String otp = generateOTP();
         LocalDateTime expiry = LocalDateTime.now().plusMinutes(10);

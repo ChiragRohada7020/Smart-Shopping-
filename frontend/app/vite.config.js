@@ -10,7 +10,7 @@ export default defineConfig({
         target: 'http://localhost:8082',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/auth/, '/auth')
+        // rewrite: (path) => path.replace(/^\/auth/, '/auth')
       }
     }}
 })

@@ -41,6 +41,7 @@
     <groupId>org.json</groupId>
     <artifactId>json</artifactId>
     <version>20240303</version> <!-- or latest version -->
+<<<<<<< HEAD
 </dependency>   
       
       <dependency>
@@ -52,6 +53,8 @@
 <dependency>
     <groupId>com.fasterxml.jackson.core</groupId>
     <artifactId>jackson-databind</artifactId>
+=======
+>>>>>>> f8c3d8756f3048b9c7d39613f6c799d9d0a20172
 </dependency>
 
         
